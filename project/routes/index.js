@@ -1,20 +1,14 @@
 const router = require('koa-router')()
-const conf = require('../conf/pro.json')
+var NovelTransferModel = require('../model/NovelTransfer');
 
-router.get('/', async (ctx, next) => {
-  await ctx.render('index', {
-    title: 'Hello Koa 2!'
-  })
-})
-
-router.get('/url', async (ctx, next) => {
-  ctx.redirect(conf.url)
-})
-
-router.get('/json', async (ctx, next) => {
-  ctx.body = {
-    title: 'koa2 json'
-  }
+router.get('/:randomID', async (ctx, next) => {
+	let novel= await NovelTransferModel.findOne({randomID:ctx.params.randomID})
+	if(novel){
+		let url = 'http://erji.nyzda.top/novel_transfer/' + novel._id;
+		ctx.response.redirect(url);
+	}else{
+		ctx.body= 'no url translate'
+	}
 })
 
 module.exports = router
